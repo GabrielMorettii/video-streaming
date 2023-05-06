@@ -1,8 +1,6 @@
 import { execFile } from "child_process"
 
-const FFMPEG_PATH = '/usr/bin/ffmpeg'
-
-export function convertVideo(src, out, resolution) {
+export function convertVideo(src: string, out: string, resolution: string) {
   const args = [
     "-i", src,
     "-c:v", "libx264",
@@ -14,7 +12,7 @@ export function convertVideo(src, out, resolution) {
   ]
 
   return new Promise((resolve, reject) => {
-    execFile(FFMPEG_PATH, args, (error, stdout, stderr) => {
+    execFile(process.env.FFMPEG_BIN_PATH!, args, (error, stdout, stderr) => {
       if (error) {
         return reject(error)
       }
@@ -23,3 +21,9 @@ export function convertVideo(src, out, resolution) {
     })
   })
 }
+
+export const RESOLUTIONS = [
+  { size: "720p", dimensions: "1280x720" },
+  { size: "360p", dimensions: "640x360" },
+  { size: "144p", dimensions: "256x144" }
+]
