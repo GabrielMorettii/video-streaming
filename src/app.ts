@@ -8,6 +8,7 @@ import {
   addTranscribeJob,
   checkTranscribeJobState,
 } from "./libs/aws-transcribe";
+import { addSubtitle } from "./libs/ffmpeg";
 
 const app = express();
 
@@ -65,6 +66,18 @@ app.post("/transcribe", async (req, res) => {
   const response = await addTranscribeJob(data);
 
   return res.json(response);
+});
+
+app.post("/transcribe/embed", async (req, res) => {
+  const data = req.body;
+
+  const outPath = path.join(process.cwd(), "uploads", "video.mp4");
+
+  data.outPath = outPath;
+
+  await addSubtitle(data);
+
+  return res.json({ message: "ok" });
 });
 
 app.get("/transcribe/status/:jobId", async (req, res) => {

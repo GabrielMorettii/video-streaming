@@ -9,7 +9,6 @@ import {
 
 import { IAddTranscribeJobCommand } from "../interfaces/IAddTranscribeJobCommand";
 
-
 const client = new TranscribeClient({
   region: process.env.AWS_REGION,
   credentials: {
