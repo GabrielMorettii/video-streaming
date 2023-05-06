@@ -9,16 +9,11 @@ import {
   checkTranscribeJobState,
 } from "./libs/aws-transcribe";
 import { addSubtitle } from "./libs/ffmpeg";
+import UploadFileUseCase from "./services/UploadFileUseCase";
 
 const app = express();
 
 app.use(express.json());
-
-app.get("/", (req, res) => {
-  const documentPath = path.join(process.cwd(), "src", "index.html");
-
-  return res.sendFile(documentPath);
-});
 
 app.get("/video", async (req, res) => {
   const rangeHeader = req.headers.range;
@@ -56,36 +51,34 @@ app.get("/video", async (req, res) => {
   return videoStream.pipe(res);
 });
 
-app.post("/upload", handleFileUpload, (req, res) => {
-  return res.send();
-});
+app.post("/upload", handleFileUpload, new UploadFileUseCase().execute);
 
-app.post("/transcribe", async (req, res) => {
-  const data = req.body;
+// app.post("/transcribe", async (req, res) => {
+//   const data = req.body;
 
-  const response = await addTranscribeJob(data);
+//   const response = await addTranscribeJob(data);
 
-  return res.json(response);
-});
+//   return res.json(response);
+// });
 
-app.post("/transcribe/embed", async (req, res) => {
-  const data = req.body;
+// app.post("/transcribe/embed", async (req, res) => {
+//   const data = req.body;
 
-  const outPath = path.join(process.cwd(), "uploads", "video.mp4");
+//   const outPath = path.join(process.cwd(), "uploads", "video.mp4");
 
-  data.outPath = outPath;
+//   data.outPath = outPath;
 
-  await addSubtitle(data);
+//   await addSubtitle(data);
 
-  return res.json({ message: "ok" });
-});
+//   return res.json({ message: "ok" });
+// });
 
-app.get("/transcribe/status/:jobId", async (req, res) => {
-  const jobId = req.params.jobId;
+// app.get("/transcribe/status/:jobId", async (req, res) => {
+//   const jobId = req.params.jobId;
 
-  const response = await checkTranscribeJobState(jobId);
+//   const response = await checkTranscribeJobState(jobId);
 
-  return res.json(response);
-});
+//   return res.json(response);
+// });
 
 export default app;

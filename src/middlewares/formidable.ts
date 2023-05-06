@@ -1,10 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import formidable from "formidable";
 import slugify from "slugify";
-import path from "path";
 import { File } from "formidable";
-
-import { RESOLUTIONS, convertVideo } from "../libs/ffmpeg";
 
 export const handleFileUpload = async (
   req: Request,
@@ -12,7 +9,7 @@ export const handleFileUpload = async (
   next: NextFunction
 ) => {
   const form = formidable({
-    uploadDir: "uploads",
+    uploadDir: "tmp",
     keepExtensions: true,
     filename(name, ext, part, form) {
       return `${slugify(name)}${ext}`;
@@ -32,24 +29,7 @@ export const handleFileUpload = async (
     });
   });
 
-  const originalFilePath = file.filepath;
-
-  const extName = path.extname(originalFilePath);
-
-  const fileNameWithoutExt = path.basename(file.originalFilename!, extName);
-
-  const pathsToResolution = RESOLUTIONS.map(({ size, dimensions }) => {
-    return {
-      dimensions,
-      filePath: `${fileNameWithoutExt}__${size}${extName}`,
-    };
-  });
-
-  await Promise.all(
-    pathsToResolution.map(({ filePath, dimensions }) =>
-      convertVideo(originalFilePath, `uploads/${filePath}`, dimensions)
-    )
-  );
+  req.file = file;
 
   next();
 };
