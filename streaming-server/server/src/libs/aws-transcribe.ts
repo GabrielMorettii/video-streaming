@@ -1,21 +1,15 @@
 import { randomUUID } from "node:crypto";
-import {
-  StartTranscriptionJobCommand,
-  TranscribeClient,
-  GetTranscriptionJobCommandOutput,
-  GetTranscriptionJobCommand,
-  TranscriptionJobStatus,
-} from "@aws-sdk/client-transcribe";
 
 import { IAddTranscribeJobCommand } from "../interfaces/IAddTranscribeJobCommand";
 
-const client = new TranscribeClient({
-  region: process.env.AWS_REGION,
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-  },
-});
+import AWS from "./aws";
+
+import {
+  GetTranscriptionJobResponse,
+  TranscriptionJobStatus,
+} from "aws-sdk/clients/transcribeservice";
+
+const client = new AWS.TranscribeService();
 
 export const addTranscribeJob = async ({
   mediaFile,
@@ -24,8 +18,8 @@ export const addTranscribeJob = async ({
 }: IAddTranscribeJobCommand) => {
   const transcriptionJobName = randomUUID();
 
-  const response = await client.send(
-    new StartTranscriptionJobCommand({
+  const response = await client
+    .startTranscriptionJob({
       TranscriptionJobName: transcriptionJobName,
       Media: {
         MediaFileUri: mediaFile,
@@ -36,30 +30,32 @@ export const addTranscribeJob = async ({
         ? { Subtitles: { Formats: outputSubtitlesFormats } }
         : {}),
     })
-  );
+    .promise();
+
   return { transcriptionJobName, response };
 };
 
-
 const normaliseJobState = ({
   TranscriptionJob,
-}: GetTranscriptionJobCommandOutput) => {
-  if(!TranscriptionJob) return;
+}: GetTranscriptionJobResponse) => {
+  if (!TranscriptionJob) return;
 
-  const status = TranscriptionJob.TranscriptionJobStatus;
-  
-  if (status === TranscriptionJobStatus.FAILED) {
+  const status: TranscriptionJobStatus =
+    TranscriptionJob.TranscriptionJobStatus!;
+
+  if (status === "FAILED") {
     return {
       status,
       error: TranscriptionJob.FailureReason,
     };
   }
-  if (status === TranscriptionJobStatus.COMPLETED) {
+  if (status === "COMPLETED") {
     return {
       status,
       completedWithinSec:
         (new Date(TranscriptionJob.CompletionTime!).getTime() -
-        new Date(TranscriptionJob.CreationTime!).getTime())/1000,
+          new Date(TranscriptionJob.CreationTime!).getTime()) /
+        1000,
       json: TranscriptionJob.Transcript!.TranscriptFileUri,
       subtitleFileUris: TranscriptionJob?.Subtitles?.SubtitleFileUris || [],
     };
@@ -68,10 +64,11 @@ const normaliseJobState = ({
 };
 
 export const checkTranscribeJobState = async (jobId: string) => {
-  const response = await client.send(
-    new GetTranscriptionJobCommand({
+  const response = await client
+    .getTranscriptionJob({
       TranscriptionJobName: jobId,
     })
-  );
+    .promise();
+
   return normaliseJobState(response);
 };

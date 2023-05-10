@@ -1,0 +1,94 @@
+service: content-moderation-lambda
+
+frameworkVersion: "3"
+
+plugins:
+  - serverless-offline
+  - serverless-plugin-typescript
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  environment:
+    INPUT_BUCKET_NAME: gm-videos
+    OUTPUT_BUCKET_NAME: gm-converted
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - "mediaconvert:*"
+            - "iam:*"
+            - "rekognition:*"
+            - "s3:*"
+            - "transcribe:*"
+          Resource: "*"
+
+functions:
+  s3listener:
+    handler: src/index.s3listener
+    environment:
+      REKO_ROLE_ARN:
+        Fn::GetAtt:
+          - IamRoleRekognition
+          - Arn
+      MEDIA_ROLE_ARN:
+        Fn::GetAtt:
+          - IamRoleMediaConvert
+          - Arn
+    events:
+      - s3:
+          bucket: ${self:provider.environment.INPUT_BUCKET_NAME}
+          event: s3:ObjectCreated:*
+          rules:
+            - suffix: .mp4
+
+resources:
+  Resources:
+    MyS3Bucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:provider.environment.OUTPUT_BUCKET_NAME}
+    IamRoleMediaConvert:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: media-convert-full
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service: mediaconvert.amazonaws.com
+              Action: sts:AssumeRole
+        Policies:
+          - PolicyName: media-convert-full-access
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - mediaconvert:*
+                    - s3:*
+                  Resource: "*"
+    IamRoleRekognition:
+      Type: "AWS::IAM::Role"
+      Properties:
+        RoleName: rekognition-content-moderation-role
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: "Allow"
+              Principal:
+                Service: 
+                  - "rekognition.amazonaws.com"
+              Action: "sts:AssumeRole"
+        Policies:
+          - PolicyName: "rekognition-content-moderation-policy"
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: "Allow"
+                  Action:
+                    - "rekognition:*"
+                    - "s3:*"
+                  Resource: "*"

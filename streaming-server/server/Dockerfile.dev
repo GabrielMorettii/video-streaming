@@ -1,0 +1,11 @@
+FROM node:16.0-alpine
+
+WORKDIR /app
+
+COPY package.json package-lock.json /app/
+
+RUN npm ci --silent
+
+COPY . .
+
+CMD ["npm", "run", "dev"]

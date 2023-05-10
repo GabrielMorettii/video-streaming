@@ -1,0 +1,38 @@
+{
+  "Records": [
+    {
+      "eventVersion": "2.1",
+      "eventSource": "aws:s3",
+      "awsRegion": "us-east-1",
+      "eventTime": "2022-08-25T00:48:32.922Z",
+      "eventName": "ObjectCreated:Put",
+      "userIdentity": {
+        "principalId": "AWS:544341614012"
+      },
+      "requestParameters": {
+        "sourceIPAddress": "191.36.171.116"
+      },
+      "responseElements": {
+        "x-amz-request-id": "2MY68RT94D9NDK42",
+        "x-amz-id-2": "r9rZOET4ZpPdnusUln/je5lPVMJBtUbb81/Gwi/ouThNRPm6IbGQFxFC1VuEhVJZBFGk+xn68aZyZjkc4zNuDjV5Gn2JUpsJ"
+      },
+      "s3": {
+        "s3SchemaVersion": "1.0",
+        "configurationId": "4a6ff674-0f15-42f0-8013-3f189ac0f7cb",
+        "bucket": {
+          "name": "gm-videos",
+          "ownerIdentity": {
+            "principalId": "A4DXUJWT7X8MV"
+          },
+          "arn": "arn:aws:s3:::gm-videos"
+        },
+        "object": {
+          "key": "01-primo-rico.mp4",
+          "size": 41,
+          "eTag": "021cb8818374f71dafe6f5b2294868e0",
+          "sequencer": "006306C6E0BF7FF3A3"
+        }
+      }
+    }
+  ]
+}
