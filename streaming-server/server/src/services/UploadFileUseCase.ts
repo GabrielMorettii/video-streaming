@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
-import { uploadFileToS3 } from "../libs/aws-s3";
 import fs from "fs/promises";
+
+import { uploadFileToS3 } from "../libs/aws-s3";
 
 export class UploadFileUseCase {
   async execute(req: Request, res: Response) {

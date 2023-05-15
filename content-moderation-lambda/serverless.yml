@@ -1,0 +1,55 @@
+service: content-moderation-lambda
+
+frameworkVersion: "3"
+
+plugins:
+  - serverless-offline
+  - serverless-plugin-typescript
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - "rekognition:*"
+            - "s3:*"
+            - "transcribe:*"
+            - "comprehend:*"
+          Resource: "*"
+
+functions:
+  moderateContent:
+    handler: src/index.moderate
+    events:
+      - sns: arn:aws:sns:us-east-1:544341614012:AmazonRekognitionCompletion
+
+resources:
+  Resources:
+    EventBridgeModerationRule:
+      Type: AWS::Events::Rule
+      Properties:
+        Name: eventbridge-moderation-rule
+        Description: Event Bridge's rule to moderate content
+        EventPattern:
+          source:
+            - aws.transcribe
+          detail-type:
+            - "Transcribe Job State Change"
+          detail:
+            TranscriptionJobStatus:
+              - COMPLETED
+        State: ENABLED
+        Targets:
+          - Arn: !GetAtt ModerateContentLambdaFunction.Arn
+            Id: moderateContentTarget
+        EventBusName: default
+    LambdaInvokePermission:
+      Type: AWS::Lambda::Permission
+      Properties:
+        Action: lambda:InvokeFunction
+        FunctionName: !GetAtt ModerateContentLambdaFunction.Arn
+        Principal: events.amazonaws.com
+        SourceArn: !GetAtt EventBridgeModerationRule.Arn

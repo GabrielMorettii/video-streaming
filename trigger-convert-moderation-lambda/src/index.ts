@@ -3,7 +3,7 @@ import { S3Event, APIGatewayProxyResult } from "aws-lambda";
 import * as AWS from "aws-sdk";
 
 import path from "node:path";
-import crypto from 'node:crypto';
+import crypto from "node:crypto";
 
 class Handler {
   constructor(
@@ -22,18 +22,20 @@ class Handler {
       },
     ] = event.Records;
 
-    // const mediaParams = this.getMediaConvertParams(key);
+    const mediaParams = this.getMediaConvertParams(key);
 
     const rekoParams = this.getRekognitionParams(name, key);
 
     const transcribeParams = this.getTranscriptionParams(name, key);
 
-    const [responseTranscribe] = await Promise.all([
-      // this.mediaConvert.createJob(mediaParams).promise(),
-      // this.rekoSvc.startContentModeration(rekoParams).promise(),
+    const [responseMedia, responseReko, responseTranscribe] = await Promise.all([
+      this.mediaConvert.createJob(mediaParams).promise(),
+      this.rekoSvc.startContentModeration(rekoParams).promise(),
       this.transcribeSvc.startTranscriptionJob(transcribeParams).promise(),
     ]);
-
+    
+    console.log(JSON.stringify({ responseMedia }, null, 2));
+    console.log(JSON.stringify({ responseReko }, null, 2));
     console.log(JSON.stringify({ responseTranscribe }, null, 2));
 
     return {
@@ -295,6 +297,10 @@ class Handler {
           Name: fileKey,
         },
       },
+      NotificationChannel: {
+        SNSTopicArn: process.env.TOPIC_ARN!,
+        RoleArn: process.env.REKO_ROLE_ARN!,
+      },
       MinConfidence: 80,
     };
 
@@ -314,7 +320,6 @@ class Handler {
       },
       OutputBucketName: `${outputBucketName}`,
       OutputKey: `${fileNameWithoutExt}/transcribe.json`,
-      
     };
 
     return params;

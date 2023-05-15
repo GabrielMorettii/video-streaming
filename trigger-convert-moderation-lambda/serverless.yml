@@ -1,4 +1,4 @@
-service: content-moderation-lambda
+service: trigger-convert-moderation-lambda
 
 frameworkVersion: "3"
 
@@ -28,6 +28,8 @@ functions:
   s3listener:
     handler: src/index.s3listener
     environment:
+      TOPIC_ARN:
+        Ref: SNSTopicRekognitionCompletion
       REKO_ROLE_ARN:
         Fn::GetAtt:
           - IamRoleRekognition
@@ -45,7 +47,11 @@ functions:
 
 resources:
   Resources:
-    MyS3Bucket:
+    SNSTopicRekognitionCompletion:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: AmazonRekognitionCompletion
+    S3OutputBucket:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:provider.environment.OUTPUT_BUCKET_NAME}
@@ -91,4 +97,5 @@ resources:
                   Action:
                     - "rekognition:*"
                     - "s3:*"
+                    - "sns:*"
                   Resource: "*"

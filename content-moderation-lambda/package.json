@@ -4,9 +4,7 @@
   "version": "1.0.0",
   "scripts": {
     "start": "npx sls offline",
-    "logs:s3listener": "npx sls logs -f s3listener",
-    "invoke-local:s3": "npx sls invoke local -f s3listener --path src/mocks/s3-insert.json",
-    "invoke:s3": "npx sls invoke -f s3listener --path src/mocks/s3-insert.json"
+    "logs:moderateContent": "npx sls logs -f moderateContent"
   },
   "dependencies": {
     "aws-sdk": "^2.1373.0"
