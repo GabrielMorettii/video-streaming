@@ -15,5 +15,11 @@ export const uploadFileToS3 = async (file: FileUpload) => {
     Body: createReadStream(),
   };
 
-  return s3Client.upload(uploadParams).promise();
+  await new Promise(resolve => setTimeout(resolve, 3000))
+
+  // s3Client.upload(uploadParams).promise();
+
+  return {
+    Location: "google.com"
+  }
 }

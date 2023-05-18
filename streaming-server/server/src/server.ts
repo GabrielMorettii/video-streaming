@@ -15,7 +15,7 @@ const PORT = process.env.SERVER_PORT || 5000;
 
   const server = new ApolloServer({
     schema,
-    csrfPrevention: true
+    csrfPrevention: false
   });
 
   await server.start();
