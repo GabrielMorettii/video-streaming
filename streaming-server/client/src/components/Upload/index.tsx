@@ -1,8 +1,9 @@
 import { useDropzone } from "react-dropzone";
 
+import { CloudArrowUp } from "phosphor-react";
+
 import { DropContainer, UploadMessage } from "./styles";
 
-import { CloudArrowUp } from "phosphor-react";
 
 interface UploadProps {
   onUpload: (files: File[]) => void;

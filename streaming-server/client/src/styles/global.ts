@@ -1,5 +1,7 @@
 import { createGlobalStyle } from 'styled-components'
 
+import "plyr-react/plyr.css";
+
 export const GlobalStyle = createGlobalStyle`
   * {
     margin: 0;
@@ -9,7 +11,7 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    background: #FFFFFF;
+    background: ${(props) => props.theme.colors['base-background']};
     font-family: 'Poppins', sans-serif;
     -webkit-font-smoothing: antialiased;
   }

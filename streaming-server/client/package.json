@@ -4,15 +4,15 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "env-cmd -f .env vite",
+    "dev": "vite",
     "build": "tsc && vite build",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
   "dependencies": {
     "@apollo/client": "^3.7.14",
+    "@radix-ui/react-dialog": "^1.0.3",
     "apollo-upload-client": "^17.0.0",
-    "env-cmd": "^10.1.0",
     "graphql": "^16.6.0",
     "phosphor-react": "^1.4.1",
     "plyr-react": "^5.2.0",

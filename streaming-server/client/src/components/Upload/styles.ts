@@ -1,5 +1,4 @@
 import { css, styled } from "styled-components";
-
 interface DropContainerProps{
   $isDragActive?: boolean;
   $isDragReject?: boolean;
@@ -9,17 +8,12 @@ interface UploadMessageProps {
   type?: 'error' | 'success';
 }
 
-enum MessageColors {
-  error = '#e57878',
-  success = '#78e5d5',
-  default = '#999'
-}
-
 export const DropContainer = styled.div<DropContainerProps>`
-  border: 2px dashed #a8aeb1;
+  border: 2px dashed ${({theme}) => theme.colors['base-border']};
   border-radius: 6px;
 
   width: 100%;
+  max-width: 1000px;
   min-height: 500px;
 
   transition: all 0.2s ease;
@@ -30,7 +24,7 @@ export const DropContainer = styled.div<DropContainerProps>`
   flex-direction: column;
 
   svg {
-    color: #34495E;
+    color: #9DA1C9;
   }
 
   &:hover {
@@ -41,18 +35,18 @@ export const DropContainer = styled.div<DropContainerProps>`
 
 
   ${(props) => props.$isDragActive && css`
-    border-color: ${MessageColors.success};
+    border-color: ${props.theme.colors.success};
 
     svg {
-      color: ${MessageColors.success};
+      color: ${props.theme.colors.success};
     }
   `}
   
   ${(props) => props.$isDragReject && css`
-    border-color: ${MessageColors.error};
+    border-color: ${props.theme.colors.error};
 
     svg {
-      color: ${MessageColors.error};
+      color: ${props.theme.colors.error};
     }
   `}
 `;
@@ -64,5 +58,5 @@ export const UploadMessage = styled.p<UploadMessageProps>`
 
   padding: 15px 0;
 
-  color: ${props => MessageColors[props.type || 'default']};
+  color: ${(props) => props.theme.colors[props.type || 'default']};
 `;
