@@ -20,4 +20,8 @@ export class NotificationsService {
   listNotifications() {
     return this.notifications;
   }
+
+  updateNotification(id: string) {
+    this.notifications = this.notifications.filter(notification => notification.id !== id);
+  }
 }

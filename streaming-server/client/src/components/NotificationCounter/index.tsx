@@ -1,6 +1,6 @@
 import { useContext } from "react";
 
-import { Bell, Check, X, MaskSad } from "phosphor-react";
+import { Bell, Check, X } from "phosphor-react";
 
 import { AiOutlineExclamation } from "react-icons/ai";
 
@@ -23,7 +23,7 @@ export function NotificationCounter() {
         <S.NotificationContainer>
           <S.BellContainer>
             <Bell size={20} />
-            <S.ItemCounter>0</S.ItemCounter>
+            <S.ItemCounter>{notifications.length}</S.ItemCounter>
           </S.BellContainer>
         </S.NotificationContainer>
       </Dialog.Trigger>
@@ -36,7 +36,7 @@ export function NotificationCounter() {
           <S.ModalTitle>Notificações</S.ModalTitle>
           {!hasNotifications && (
             <S.WithoutNotifications>
-              <Bell size={32}/>
+              <Bell size={32} />
               <p>Parece que você não tem notificações.</p>
               <p>Faça upload de um vídeo para começar a receber</p>
             </S.WithoutNotifications>

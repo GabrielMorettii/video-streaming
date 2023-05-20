@@ -4,9 +4,9 @@ import { NotificationsService } from "../services/notifications-service";
 import { io } from "../../../app";
 import { NotificationDto } from "../dtos/notification-dto";
 
-export const notificationsHandler = (socket: Socket) => {
-  const notificationsService = new NotificationsService();
+const notificationsService = new NotificationsService();
 
+export const notificationsHandler = (socket: Socket) => {
   const createNotificationService = (payload: NotificationDto) => {
     return notificationsService.createNotification(io, payload);
   };
@@ -18,6 +18,11 @@ export const notificationsHandler = (socket: Socket) => {
     return callback(notificationsService.listNotifications());
   };
 
+  const updateNotificationService = (payload: { id: string }) => {
+    return notificationsService.updateNotification(payload.id)
+  };
+
   socket.on("notification:create", createNotificationService);
   socket.on("notification:list", listNotificationService);
+  socket.on("notification:update", updateNotificationService);
 };
