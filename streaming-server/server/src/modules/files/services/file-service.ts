@@ -1,11 +1,13 @@
-import slugify from 'slugify';
-import AWS from '../../../libs/aws'
-
+import slugify from "slugify";
 import { FileUpload } from "graphql-upload";
+import { randomUUID } from "crypto";
+
+import AWS from "../../../libs/aws";
+import { io } from "../../../app";
 
 const s3Client = new AWS.S3();
 
-export const uploadFileToS3 = async (file: FileUpload) => { 
+export const uploadFileToS3 = async (file: FileUpload) => {
   const { createReadStream, filename } = file;
 
   const newFileName = slugify(filename, { lower: true });
@@ -16,11 +18,15 @@ export const uploadFileToS3 = async (file: FileUpload) => {
     Body: createReadStream(),
   };
 
-  await new Promise(resolve => setTimeout(resolve, 3000))
-  
-  // s3Client.upload(uploadParams).promise();
+  await new Promise((resolve) => setTimeout(resolve, 3000));
 
-  return {
-    Location: "google.com"
-  }
-}
+  // const response = await s3Client.upload(uploadParams).promise();
+
+  io.emit("notification:created", {
+    id: randomUUID(),
+    type: "success",
+    description: "O upload do vídeo foi um sucesso!",
+  });
+
+  return { Location: "https://www.google.com" };
+};

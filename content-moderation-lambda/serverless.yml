@@ -36,11 +36,15 @@ resources:
         EventPattern:
           source:
             - aws.transcribe
+            - aws.mediaconvert
           detail-type:
             - "Transcribe Job State Change"
+            - "MediaConvert Job State Change"
           detail:
             TranscriptionJobStatus:
               - COMPLETED
+            Status:
+              - COMPLETE
         State: ENABLED
         Targets:
           - Arn: !GetAtt ModerateContentLambdaFunction.Arn

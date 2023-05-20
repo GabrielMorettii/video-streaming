@@ -1,3 +1,5 @@
 import { io } from "socket.io-client";
 
-export const socket = io(import.meta.env.VITE_SERVER_WS_URL!)
+export const socket = io({
+  path: "/socket.io"
+})

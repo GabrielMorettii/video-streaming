@@ -1,19 +1,19 @@
 version: '3'
 
 services:
-  nginx:
+  client:
     restart: always
     build:
-      dockerfile: Dockerfile.dev
-      context: ./nginx
+      context: ./client
     ports:
-      - "8080:80"
+      - "8000:80"
     depends_on:
       - api
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
 
   api:
     build:  
-      dockerfile: Dockerfile.dev
       context: ./server
     volumes:
       - /app/node_modules

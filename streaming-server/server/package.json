@@ -2,8 +2,10 @@
   "name": "streaming",
   "version": "1.0.0",
   "description": "",
-  "main": "src/server.ts",
+  "main": "dist/server.js",
   "scripts": {
+    "build": "npx tsc",
+    "start": "node dist/server.js",
     "dev": "tsnd --respawn --transpile-only src/server.ts"
   },
   "keywords": [],

@@ -4,10 +4,13 @@
   "version": "1.0.0",
   "scripts": {
     "start": "npx sls offline",
-    "logs:moderateContent": "npx sls logs -f moderateContent"
+    "logs:moderateContent": "npx sls logs -f moderateContent",
+    "invoke-local:moderateContent": "npx sls invoke local -f moderateContent --path src/mocks/media-convert-complete.json"
   },
   "dependencies": {
-    "aws-sdk": "^2.1373.0"
+    "aws-sdk": "^2.1373.0",
+    "dotenv": "^16.0.3",
+    "socket.io-client": "^4.6.1"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.101",

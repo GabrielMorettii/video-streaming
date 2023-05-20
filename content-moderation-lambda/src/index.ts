@@ -1,6 +1,8 @@
-import path from "node:path";
+import "dotenv/config";
+import path from "path";
 import { Buffer } from "buffer";
 import { SNSEvent } from "aws-lambda";
+import { Socket, io } from "socket.io-client";
 
 import * as AWS from "aws-sdk";
 
@@ -8,16 +10,19 @@ import {
   ITranscribeBridgeEvent,
   IRekoMessage,
   ITranscriptBody,
+  IMediaConvertBridgeEvent,
 } from "./interfaces";
 
 import { badWords } from "./utils/badWords";
+import { EnumSocketEvents } from "./interfaces/EnumSocketEvents";
 
 class Handler {
   constructor(
     public rekoSvc: AWS.Rekognition,
     public s3Svc: AWS.S3,
     public transcribeSvc: AWS.TranscribeService,
-    public comprehend: AWS.Comprehend
+    public comprehend: AWS.Comprehend,
+    public socket: Socket
   ) {}
 
   async execute(event) {
@@ -68,7 +73,25 @@ class Handler {
     }
   }
 
-  async handleEventBridgeEvent(event: ITranscribeBridgeEvent) {
+  async handleEventBridgeEvent(
+    event: ITranscribeBridgeEvent | IMediaConvertBridgeEvent
+  ) {
+    const handlers = {
+      "aws.mediaconvert": () => this.handleMediaConvertEvent(),
+      "aws.transcribe": () => this.handleTranscribeEvent(event as ITranscribeBridgeEvent),
+    };
+
+    return await handlers[event.source]();
+  }
+
+  private handleMediaConvertEvent() {
+    socket.emit(EnumSocketEvents.NOTIFICATION_CREATE, {
+      type: "info",
+      description: "Seu vídeo foi convertido para todos os formatos.",
+    })
+  }
+
+  private async handleTranscribeEvent(event: ITranscribeBridgeEvent) {
     const { TranscriptionJobName, TranscriptionJobStatus: jobStatus } =
       event.detail;
 
@@ -109,7 +132,7 @@ class Handler {
         .detectSentiment({ Text: textToAnalyse, LanguageCode: "pt" })
         .promise();
 
-      const textHasBadWords = this.checkIfTextContainsBadWords(textToAnalyse);  
+      const textHasBadWords = this.checkIfTextContainsBadWords(textToAnalyse);
 
       if (result.Sentiment === "NEGATIVE" || textHasBadWords) {
         const fileName = key.replace("/transcribe.json", ".mp4");
@@ -131,6 +154,11 @@ class Handler {
         .promise(),
       this.emptyS3Directory(convertedBucketName, key),
     ]);
+
+    socket.emit(EnumSocketEvents.NOTIFICATION_CREATE, {
+      type: "info",
+      description: "Seu vídeo foi removido por conter conteúdo impróprio.",
+    });
   }
 
   private async emptyS3Directory(bucketName: string, fileKey: string) {
@@ -177,7 +205,8 @@ const reko = new AWS.Rekognition();
 const s3 = new AWS.S3();
 const transcribe = new AWS.TranscribeService();
 const comprehend = new AWS.Comprehend();
+const socket = io(process.env.WS_SERVER_URL!);
 
-const handler = new Handler(reko, s3, transcribe, comprehend);
+const handler = new Handler(reko, s3, transcribe, comprehend, socket);
 
 export const moderate = handler.execute.bind(handler);
