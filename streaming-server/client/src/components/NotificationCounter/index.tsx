@@ -1,11 +1,22 @@
-import { Bell, Check, CheckCircle, Info, X } from "phosphor-react";
+import { useContext } from "react";
+
+import { Bell, Check, X, MaskSad } from "phosphor-react";
+
+import { AiOutlineExclamation } from "react-icons/ai";
 
 import * as Dialog from "@radix-ui/react-dialog";
+
 import * as S from "./styles";
 
-import info from '../../../public/info.svg'
+import { NotificationContext } from "../../contexts/NotificationContext";
+import { EnumNotificationType } from "../../interfaces/EnumNotificationType";
 
 export function NotificationCounter() {
+  const { notifications, handleRemoveNotification } =
+    useContext(NotificationContext);
+
+  const hasNotifications = notifications.length !== 0;
+
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
@@ -23,38 +34,38 @@ export function NotificationCounter() {
             <X size={20} />
           </S.ModalClose>
           <S.ModalTitle>Notificações</S.ModalTitle>
-          <S.NotificationsList>
-            <S.NotificationItem type="success">
-              <S.IconWrapper>
-                <Check size={20} />
-              </S.IconWrapper>
-              <S.NotificationText>
-                <h3>Sucesso!</h3>
-                <p>Seu vídeo foi enviado com sucesso.</p>
-              </S.NotificationText>
-              <X size={20} />
-            </S.NotificationItem>
-            <S.NotificationItem type="error">
-              <S.IconWrapper>
-                <X size={20} />
-              </S.IconWrapper>
-              <S.NotificationText>
-                <h3>Erro!</h3>
-                <p>Seu vídeo foi enviado com sucesso.</p>
-              </S.NotificationText>
-              <X size={20} />
-            </S.NotificationItem>
-            <S.NotificationItem type="info">
-             <S.IconWrapper>
-                <img src={info} alt="" />
-              </S.IconWrapper>
-              <S.NotificationText>
-                <h3>Info!</h3>
-                <p>Seu vídeo foi enviado com sucesso.</p>
-              </S.NotificationText>
-              <X size={20} />
-            </S.NotificationItem>
-          </S.NotificationsList>
+          {!hasNotifications && (
+            <S.WithoutNotifications>
+              <Bell size={32}/>
+              <p>Parece que você não tem notificações.</p>
+              <p>Faça upload de um vídeo para começar a receber</p>
+            </S.WithoutNotifications>
+          )}
+
+          {hasNotifications && (
+            <S.NotificationsList>
+              {notifications.map((notification) => (
+                <S.NotificationItem
+                  type={notification.type}
+                  key={notification.id}
+                >
+                  <S.IconWrapper>
+                    {notification.type === "success" && <Check />}
+                    {notification.type === "error" && <X />}
+                    {notification.type === "info" && <AiOutlineExclamation />}
+                  </S.IconWrapper>
+                  <S.NotificationText>
+                    <h3>{EnumNotificationType[notification.type]}</h3>
+                    <p>{notification.description}</p>
+                  </S.NotificationText>
+                  <X
+                    size={20}
+                    onClick={() => handleRemoveNotification(notification.id)}
+                  />
+                </S.NotificationItem>
+              ))}
+            </S.NotificationsList>
+          )}
         </S.ModalContent>
       </Dialog.Portal>
     </Dialog.Root>

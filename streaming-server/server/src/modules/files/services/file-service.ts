@@ -1,5 +1,6 @@
 import slugify from 'slugify';
-import AWS from '../libs/aws'
+import AWS from '../../../libs/aws'
+
 import { FileUpload } from "graphql-upload";
 
 const s3Client = new AWS.S3();
@@ -16,7 +17,7 @@ export const uploadFileToS3 = async (file: FileUpload) => {
   };
 
   await new Promise(resolve => setTimeout(resolve, 3000))
-
+  
   // s3Client.upload(uploadParams).promise();
 
   return {

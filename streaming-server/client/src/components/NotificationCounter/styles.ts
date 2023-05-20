@@ -1,4 +1,4 @@
-import { css, styled } from "styled-components";
+import {  styled } from "styled-components";
 import * as Dialog from "@radix-ui/react-dialog";
 
 interface NotificationItemProps {
@@ -74,7 +74,9 @@ export const ModalContent = styled(Dialog.Content)`
   right: 0;
   top: 0;
 
-  width: 500px;
+  max-width: 500px;
+  width: 100%;
+
   height: 100%;
 
   padding: 20px;
@@ -115,7 +117,13 @@ export const ModalTitle = styled(Dialog.Title)`
 export const NotificationsList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 5px;
+
+  height: 100%;
+  padding: 5px;
+  border-radius: 10px;
+
+  border: 1px solid ${({ theme }) => theme.colors["base-box"]};
 `;
 
 export const NotificationItem = styled.div<NotificationItemProps>`
@@ -123,14 +131,20 @@ export const NotificationItem = styled.div<NotificationItemProps>`
   align-items: center;
 
   border-radius: 5px;
-  padding: 5px;
+  padding: 10px;
+  border-left: 5px solid ${({ theme, type }) => theme.colors[type]};
 
-  color: #ffffff;
+  background: ${({ theme }) => theme.colors["base-box"]};
+  color: ${({ theme }) => theme.colors["base-text"]};
 
-  background: ${({ theme, type }) => theme.colors[type]};
+  > div:first-child {
+    background: ${({ theme, type }) => theme.colors[type]};
+  }
 
   svg:first-child {
-    color: ${({ theme, type }) => theme.colors[type]};
+    width: 22px;
+    height: 22px;
+    color: ${({ theme }) => theme.colors["base-white"]};
   }
 
   div + svg {
@@ -156,6 +170,24 @@ export const IconWrapper = styled.div`
 
   border-radius: 50%;
   padding: 5px;
-
-  background: ${({ theme }) => theme.colors["base-text"]};
 `;
+
+export const WithoutNotifications = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-direction: column;
+
+  gap: 10px;
+  padding: 20px;
+
+  margin-top: 20px;
+  border-radius: 10px;
+
+  height: 200px;
+
+  color: ${({ theme }) => theme.colors["base-text"]};
+
+  background: ${({ theme }) => theme.colors["base-box"]};
+`

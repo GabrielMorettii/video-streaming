@@ -24,7 +24,7 @@ export const DropContainer = styled.div<DropContainerProps>`
   flex-direction: column;
 
   svg {
-    color: #9DA1C9;
+    color: ${({theme}) => theme.colors['base-border']};
   }
 
   &:hover {
