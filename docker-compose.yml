@@ -5,6 +5,8 @@ services:
     image: "gabrielmorettii/streaming-server_api"
     mem_limit: 128m
     hostname: api
+    environment:
+      - S3_BUCKET_NAME=gm-videos
 
   client:
     image: "gabrielmorettii/streaming-server_client"
