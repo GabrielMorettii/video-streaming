@@ -20,7 +20,7 @@ export const uploadFileToS3 = async (file: FileUpload) => {
 
   await new Promise((resolve) => setTimeout(resolve, 3000));
 
-  // const response = await s3Client.upload(uploadParams).promise();
+  const response = await s3Client.upload(uploadParams).promise();
 
   io.emit("notification:created", {
     id: randomUUID(),
@@ -28,5 +28,5 @@ export const uploadFileToS3 = async (file: FileUpload) => {
     description: "O upload do vídeo foi um sucesso!",
   });
 
-  return { Location: "https://www.google.com" };
+  return response;
 };

@@ -41,13 +41,7 @@ export function Home() {
             type: "video/mp4",
             provider: "html5" as const,
             size: 1080,
-          },
-          {
-            src: "/01-primo-rico_320p.mp4",
-            type: "video/mp4",
-            provider: "html5" as const,
-            size: 360,
-          },
+          }
         ],
       },
       options: null,
