@@ -37,7 +37,12 @@ const buildApolloServer = async () => {
 
   app.use(graphqlUploadExpress());
 
-  server.applyMiddleware({ app });
+  server.applyMiddleware({
+    app,
+    bodyParserConfig: {
+      limit: "50mb",
+    },
+  });
 
   return { app, server };
 };
