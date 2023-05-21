@@ -3,6 +3,7 @@ import "dotenv/config";
 
 import express from "express";
 import http from "http";
+import cors from 'cors';
 import { buildSchema } from "type-graphql";
 import { ApolloServer } from "apollo-server-express";
 import { graphqlUploadExpress } from "graphql-upload";
@@ -32,6 +33,8 @@ const buildApolloServer = async () => {
   });
 
   await server.start();
+
+  app.use(cors())
 
   app.use(express.json());
 
