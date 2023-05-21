@@ -36,20 +36,34 @@ resources:
         EventPattern:
           source:
             - aws.transcribe
-            - aws.mediaconvert
           detail-type:
             - "Transcribe Job State Change"
-            - "MediaConvert Job State Change"
           detail:
             TranscriptionJobStatus:
               - COMPLETED
+        State: ENABLED
+        Targets:
+          - Arn: !GetAtt ModerateContentLambdaFunction.Arn
+            Id: moderateContentTarget
+        EventBusName: default
+    EventBridgeConvertRule:
+      Type: AWS::Events::Rule
+      Properties:
+        Name: eventbridge-convert-rule
+        Description: Event Bridge's rule to convert content
+        EventPattern:
+          source:
+            - aws.mediaconvert
+          detail-type:
+            - "MediaConvert Job State Change"
+          detail:
             Status:
               - COMPLETE
         State: ENABLED
         Targets:
           - Arn: !GetAtt ModerateContentLambdaFunction.Arn
             Id: moderateContentTarget
-        EventBusName: default
+        EventBusName: default    
     LambdaInvokePermission:
       Type: AWS::Lambda::Permission
       Properties:
