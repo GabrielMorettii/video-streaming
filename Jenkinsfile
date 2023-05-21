@@ -3,8 +3,8 @@ pipeline {
 
   environment {
     AWS_REGION = 'us-east-1'
-    AWS_EB_ENVIRONMENT_NAME = 'Node-streaming-env'
-    AWS_EB_APPLICATION_NAME = 'node-streaming'
+    AWS_EB_ENVIRONMENT_NAME = 'Video-streaming-env'
+    AWS_EB_APPLICATION_NAME = 'video-streaming'
     ZIP_FILE_NAME = 'app.zip'
     S3_BUCKET = 'elasticbeanstalk-us-east-1-544341614012'
   }
