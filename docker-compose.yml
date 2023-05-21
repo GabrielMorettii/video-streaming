@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  api:
+    image: "gabrielmorettii/streaming-server_api"
+    mem_limit: 128m
+    hostname: api
+
+  client:
+    image: "gabrielmorettii/streaming-server_client"
+    mem_limit: 128m
+    hostname: client
+    ports:
+      - "80:80"
+    depends_on:
+      - api

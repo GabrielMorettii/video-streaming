@@ -9,8 +9,6 @@ services:
       - "8000:80"
     depends_on:
       - api
-    volumes:
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
 
   api:
     build:  
