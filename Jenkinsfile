@@ -2,9 +2,11 @@ pipeline {
   agent any
 
   environment {
-    DOCKER_COMPOSE_FILE = 'streaming-server/docker-compose-dev.yml'
     AWS_REGION = 'us-east-1'
     AWS_EB_ENVIRONMENT_NAME = 'Node-streaming-env'
+    AWS_EB_APPLICATION_NAME = 'node-streaming'
+    ZIP_FILE_NAME = 'app.zip'
+    S3_BUCKET = 'elasticbeanstalk-us-east-1-544341614012'
   }
 
   stages {
@@ -21,18 +23,42 @@ pipeline {
       }
     }
 
-    //  stage('Deploy to Elastic Beanstalk') {
-    //   steps {
-    //     script {
-    //       withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) {
-    //         sh 'aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID'
-    //         sh 'aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY'
-    //         sh 'aws configure set default.region $AWS_REGION'
+    stage('Package docker-compose.yml') {
+      steps {
+        sh 'zip $ZIP_FILE_NAME docker-compose.yml'
+      }
+    }
 
-    //         sh "aws elasticbeanstalk update-environment --region $AWS_REGION --environment-name $AWS_EB_ENVIRONMENT_NAME --version-label app-${BUILD_NUMBER}"
-    //       }
-    //     }
-    //   }
-    // }
+     stage('Deploy to S3') {
+        steps {
+            withCredentials([
+                awsAccessKeyVariable(credentialsId: 'AWS_ACCESS_KEY_ID', variable: 'AWS_ACCESS_KEY_ID'),
+                awsSecretKeyVariable(credentialsId: 'AWS_SECRET_ACCESS_KEY', variable: 'AWS_SECRET_ACCESS_KEY')
+            ]) {
+                sh 'aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID'
+                sh 'aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY'
+                sh 'aws configure set default.region $AWS_REGION'
+                
+                sh 'aws s3 cp $ZIP_FILE_NAME s3://$S3_BUCKET/$ZIP_FILE_NAME'
+            }
+        }
+      }
+
+      stage('Deploy to Elastic Beanstalk') {
+            steps {
+                withCredentials([
+                    awsAccessKeyVariable(credentialsId: 'AWS_ACCESS_KEY_ID', variable: 'AWS_ACCESS_KEY_ID'),
+                    awsSecretKeyVariable(credentialsId: 'AWS_SECRET_ACCESS_KEY', variable: 'AWS_SECRET_ACCESS_KEY')
+                ]) {
+                    sh 'aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID'
+                    sh 'aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY'
+                    sh 'aws configure set default.region $AWS_REGION'
+                    
+                    sh 'aws elasticbeanstalk create-application-version --application-name $AWS_EB_APPLICATION_NAME --version-label app-${BUILD_NUMBER} --source-bundle S3Bucket=$S3_BUCKET,S3Key=$ZIP_FILE_NAME'
+                    
+                    sh 'aws elasticbeanstalk update-environment --environment-name $AWS_EB_ENVIRONMENT_NAME --version-label app-${BUILD_NUMBER}'
+                }
+            }
+        }
   }
 }
