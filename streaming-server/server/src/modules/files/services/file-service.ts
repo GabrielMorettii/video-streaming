@@ -18,8 +18,6 @@ export const uploadFileToS3 = async (file: FileUpload) => {
     Body: createReadStream(),
   };
 
-  await new Promise((resolve) => setTimeout(resolve, 3000));
-
   const response = await s3Client.upload(uploadParams).promise();
 
   io.emit("notification:created", {
