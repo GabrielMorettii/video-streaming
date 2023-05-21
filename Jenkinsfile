@@ -13,6 +13,8 @@ pipeline {
         script {
           docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
             sh 'docker-compose -f ${DOCKER_COMPOSE_FILE} build'
+            sh 'docker tag streaming-server_api gabrielmorettii/streaming-server_api'
+            sh 'docker tag streaming-server_client gabrielmorettii/streaming-server_client'
             sh 'docker push gabrielmorettii/streaming-server_api'
             sh 'docker push gabrielmorettii/streaming-server_client'
           }
