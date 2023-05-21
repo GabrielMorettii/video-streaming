@@ -16,10 +16,8 @@ import * as S from "./styles";
 
 export function Home() {
   const [fileURL, setFileURL] = useState<string>("");
-  const [uploadFile, { loading, error }] =
+  const [uploadFile, { loading }] =
     useMutation<IUploadResponse>(UPLOAD_FILE_MUTATION);
-
-  console.log('error', error)
 
   const handleUpload = async (files: File[]) => {
     const file = files[0];
@@ -30,9 +28,6 @@ export function Home() {
       variables: {
         file,
       },
-      onError: (error) => {
-        console.log('onError', error);
-      }
     });
   };
 
