@@ -34,8 +34,6 @@ const buildApolloServer = async () => {
 
   await server.start();
 
-  app.use(cors())
-
   app.use(express.json());
 
   app.use(graphqlUploadExpress());
