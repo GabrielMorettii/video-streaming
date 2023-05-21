@@ -11,7 +11,7 @@ pipeline {
     stage('Build and Push Docker Images') {
       steps {
         script {
-          docker.withRegistry('https://docker.io', 'docker-hub-credentials') {
+          docker.withRegistry([ credentialsId: "docker-hub-credentials", url: "" ]) {
             sh 'docker-compose -f ${DOCKER_COMPOSE_FILE} build'
             sh 'docker tag streaming-server_api gabrielmorettii/streaming-server_api:latest'
             sh 'docker tag streaming-server_client gabrielmorettii/streaming-server_client:latest'
