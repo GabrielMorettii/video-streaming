@@ -19,3 +19,6 @@ services:
       - "80:80"
     depends_on:
       - api
+    environment:
+      - CLOUDFRONT_URL=$CLOUDFRONT_URL
+

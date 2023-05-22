@@ -26,8 +26,6 @@ class Handler {
   ) {}
 
   async execute(event) {
-    console.log(JSON.stringify({event}, null, 2))
-
     const eventHandlers = {
       SNSEvent: () => this.handleSnsEvent(event),
       EventBridgeEvent: () => this.handleEventBridgeEvent(event),
@@ -52,8 +50,6 @@ class Handler {
   }
 
   async handleSnsEvent(event: SNSEvent) {
-    console.log('sns handler')
-
     const snsEvent = event.Records[0].Sns;
 
     const message: IRekoMessage = JSON.parse(snsEvent.Message);
@@ -80,8 +76,6 @@ class Handler {
   async handleEventBridgeEvent(
     event: ITranscribeBridgeEvent | IMediaConvertBridgeEvent
   ) {
-    console.log('event bridge handler', event.source)
-
     const handlers = {
       "aws.mediaconvert": () => this.handleMediaConvertEvent(),
       "aws.transcribe": () => this.handleTranscribeEvent(event as ITranscribeBridgeEvent),
@@ -91,8 +85,6 @@ class Handler {
   }
 
   private handleMediaConvertEvent() {
-    console.log('media convert')
-
     socket.emit(EnumSocketEvents.NOTIFICATION_CREATE, {
       type: "info",
       description: "Seu vídeo foi convertido para todos os formatos.",
@@ -100,8 +92,6 @@ class Handler {
   }
 
   private async handleTranscribeEvent(event: ITranscribeBridgeEvent) {
-    console.log('transcribe')
-
     const { TranscriptionJobName, TranscriptionJobStatus: jobStatus } =
       event.detail;
 
@@ -218,8 +208,6 @@ const comprehend = new AWS.Comprehend();
 const socket = io(process.env.WS_SERVER_URL!, {
   path: '/socket.io',
 });
-
-console.log(socket);
 
 const handler = new Handler(reko, s3, transcribe, comprehend, socket);
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import { useMutation } from "@apollo/client";
 
@@ -16,7 +16,8 @@ import * as S from "./styles";
 
 export function Home() {
   const [fileURL, setFileURL] = useState<string>("");
-  const [uploadFile, { loading }] =
+  const [isFileConverted, setIsFileConverted] = useState<boolean>(false);
+  const [uploadFile, { loading, data }] =
     useMutation<IUploadResponse>(UPLOAD_FILE_MUTATION);
 
   const handleUpload = async (files: File[]) => {
@@ -31,7 +32,13 @@ export function Home() {
     });
   };
 
-  const getPlayerProps = (url: string) => {
+  const getConvertedPlayerProps = (url: string, data: IUploadResponse) => {
+    const { location } = data.uploadFile;
+
+    const fileNameWithoutExt = location.slice(location.lastIndexOf('/') + 1).replace('.mp4', '');
+
+    const prefix = `${process.env.CLOUDFRONT_URL}/${fileNameWithoutExt}/${fileNameWithoutExt}`;
+
     return {
       source: {
         type: "video" as const,
@@ -41,6 +48,18 @@ export function Home() {
             type: "video/mp4",
             provider: "html5" as const,
             size: 1080,
+          },
+          {
+            src: `${prefix}_720p.mp4`,
+            type: "video/mp4",
+            provider: "html5" as const,
+            size: 720,
+          },
+          {
+            src: `${prefix}_320p.mp4`,
+            type: "video/mp4",
+            provider: "html5" as const,
+            size: 360,
           }
         ],
       },
@@ -48,13 +67,37 @@ export function Home() {
     };
   };
 
-  const handleCloseVideo = () => {
-    setFileURL("");
+  const getInitialPlayerProps = (url: string) => {
+    return {
+      source: {
+        type: "video" as const,
+        sources: [
+          {
+            src: url,
+            type: "video/mp4",
+            provider: "html5" as const,
+            size: 1080,
+          },
+        ],
+      },
+      options: null,
+    };
   };
+
+  const handleRemoveMedia = useCallback(() => {
+    setFileURL("");
+  }, []);
+
+  const handleReloadMedia = useCallback(() => {
+    setIsFileConverted(true);
+  }, []);
 
   return (
     <S.Container>
-      <NotificationCounter />
+      <NotificationCounter
+        onRemoveMedia={handleRemoveMedia}
+        onReloadMedia={handleReloadMedia}
+      />
 
       <S.Title>
         {loading && "Aguarde enquanto o vídeo é processado"}
@@ -69,8 +112,12 @@ export function Home() {
 
         {!loading && fileURL && (
           <S.VideoWrapper>
-            <X size={23} weight="bold" onClick={handleCloseVideo} />
-            <Plyr {...getPlayerProps(fileURL)} />
+            <X size={23} weight="bold" onClick={handleRemoveMedia} />
+
+            {!isFileConverted && <Plyr {...getInitialPlayerProps(fileURL)} />}
+
+            {isFileConverted && data && <Plyr {...getConvertedPlayerProps(fileURL, data as IUploadResponse)} />}
+
           </S.VideoWrapper>
         )}
       </S.ContentWrapper>

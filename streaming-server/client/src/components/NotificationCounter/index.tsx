@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 
 import { Bell, Check, X } from "phosphor-react";
 
@@ -11,11 +11,30 @@ import * as S from "./styles";
 import { NotificationContext } from "../../contexts/NotificationContext";
 import { EnumNotificationType } from "../../interfaces/EnumNotificationType";
 
-export function NotificationCounter() {
+interface NotificationCounterProps {
+  onRemoveMedia: () => void
+  onReloadMedia: () => void
+}
+
+export function NotificationCounter({onRemoveMedia, onReloadMedia}: NotificationCounterProps) {
   const { notifications, handleRemoveNotification } =
     useContext(NotificationContext);
 
   const hasNotifications = notifications.length !== 0;
+
+  useEffect(() => {
+    const hasContentViolationNotification = notifications.find(
+      (notification) => notification.type === "info" && notification.description.includes("impróprio"));
+
+    const hasConvertedNotification = notifications.find(
+        (notification) => notification.type === "info" && notification.description.includes("convertido"));  
+
+    if(hasContentViolationNotification) {
+      onRemoveMedia();
+    } else if (hasConvertedNotification) {
+      onReloadMedia();
+    }
+  }, [notifications, onRemoveMedia, onReloadMedia]);
 
   return (
     <Dialog.Root>

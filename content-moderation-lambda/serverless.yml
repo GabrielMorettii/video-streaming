@@ -57,17 +57,24 @@ resources:
           detail-type:
             - "MediaConvert Job State Change"
           detail:
-            Status:
+            status:
               - COMPLETE
         State: ENABLED
         Targets:
           - Arn: !GetAtt ModerateContentLambdaFunction.Arn
-            Id: moderateContentTarget
+            Id: convertContentTarget
         EventBusName: default    
-    LambdaInvokePermission:
+    LambdaInvokePermissionOne:
       Type: AWS::Lambda::Permission
       Properties:
         Action: lambda:InvokeFunction
         FunctionName: !GetAtt ModerateContentLambdaFunction.Arn
         Principal: events.amazonaws.com
         SourceArn: !GetAtt EventBridgeModerationRule.Arn
+    LambdaInvokePermissionTwo:
+        Type: AWS::Lambda::Permission
+        Properties:
+          Action: lambda:InvokeFunction
+          FunctionName: !GetAtt ModerateContentLambdaFunction.Arn
+          Principal: events.amazonaws.com
+          SourceArn: !GetAtt EventBridgeConvertRule.Arn     
