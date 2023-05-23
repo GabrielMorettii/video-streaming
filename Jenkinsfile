@@ -15,9 +15,7 @@ pipeline {
   stages {
     stage('Config'){
       steps {
-        dir('temp_workspace') {
-          sh "cp $CLIENT_ENV $PATH_TO_ENV"
-        }
+        sh "cp $CLIENT_ENV $PATH_TO_ENV"
       } 
     }
 
