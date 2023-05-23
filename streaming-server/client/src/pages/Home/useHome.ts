@@ -15,6 +15,8 @@ import { IUploadResponse, PlyrConfigurationProps } from "../../interfaces";
 
 import { NotificationContext } from "../../contexts/NotificationContext";
 
+import { env } from "../../config/env";
+
 export function useHome() {
   const { notifications, handleRemoveNotification } =
     useContext(NotificationContext);
@@ -47,9 +49,7 @@ export function useHome() {
       .slice(location.lastIndexOf("/") + 1)
       .replace(".mp4", "");
 
-    const prefix = `${
-      import.meta.env.CLOUDFRONT_URL
-    }/${fileNameWithoutExt}/${fileNameWithoutExt}`;
+    const prefix = `${env.CLOUDFRONT_URL}/${fileNameWithoutExt}/${fileNameWithoutExt}`;
 
     return {
       source: {
