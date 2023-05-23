@@ -2,6 +2,7 @@ pipeline {
   agent any
 
   environment {
+    CLIENT_ENV = credentials('CLIENT_ENV')
     AWS_REGION = 'us-east-1'
     AWS_EB_ENVIRONMENT_NAME = 'Video-streaming-env'
     AWS_EB_APPLICATION_NAME = 'video-streaming'
@@ -9,7 +10,14 @@ pipeline {
     S3_BUCKET = 'elasticbeanstalk-us-east-1-544341614012'
   }
 
+  
   stages {
+    stage('Config'){
+      steps {
+        sh "cp $CLIENT_ENV .env" 
+      } 
+    }
+
     stage('Build and Push Docker Images') {
       steps {
         script {

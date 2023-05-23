@@ -47,7 +47,7 @@ export function useHome() {
       .slice(location.lastIndexOf("/") + 1)
       .replace(".mp4", "");
 
-    const prefix = `${process.env.CLOUDFRONT_URL}/${fileNameWithoutExt}/${fileNameWithoutExt}`;
+    const prefix = `${import.meta.env.VITE_CLOUDFRONT_URL}/${fileNameWithoutExt}/${fileNameWithoutExt}`;
 
     return {
       source: {
