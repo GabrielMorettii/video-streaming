@@ -3,6 +3,7 @@ pipeline {
 
   environment {
     CLIENT_ENV = credentials('CLIENT_ENV')
+    PATH_TO_ENV = 'streaming-server/client/.env'
     AWS_REGION = 'us-east-1'
     AWS_EB_ENVIRONMENT_NAME = 'Video-streaming-env'
     AWS_EB_APPLICATION_NAME = 'video-streaming'
@@ -14,7 +15,9 @@ pipeline {
   stages {
     stage('Config'){
       steps {
-        sh "cp $CLIENT_ENV .env" 
+        dir('temp_workspace') {
+          sh "cp $CLIENT_ENV $PATH_TO_ENV"
+        }
       } 
     }
 
