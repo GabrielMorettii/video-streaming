@@ -82,7 +82,7 @@ export function useHome() {
   };
 
   const getPlayerProps = useCallback(
-    (url: string, reload: boolean) => {
+    (url: string, _reload: boolean) => {
       if (convertedState.current) {
         return getConvertedPlayerProps(data as IUploadResponse);
       }
