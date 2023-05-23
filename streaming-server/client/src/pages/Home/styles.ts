@@ -40,27 +40,34 @@ export const VideoWrapper = styled.div`
   border-radius: 8px;
 
   padding: 30px 40px;
-
   position: relative;
 
-  > svg {
-    position: absolute;
-    right: 8px;
-    top: 8px;
+  @media screen and (max-width: 800px) {
+    max-width: 100%;
+  }
+`;
 
+export const IconsWrapper = styled.div`
+  position: absolute;
+  right: 40px;
+  top: 2px;
+  gap: 5px;
+
+  display: flex;
+  align-items: center;
+
+  svg {
     background: #2a2d3b;
-    padding: 3px;
     border-radius: 50%;
-
     color: #ffff;
+    padding: 3px;
+
+    width: 23px;
+    height: 23px;
 
     &:hover {
       cursor: pointer;
       opacity: 0.8;
     }
-  }
-
-  @media screen and (max-width: 800px) {
-    max-width: 100%;
   }
 `;

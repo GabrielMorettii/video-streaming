@@ -4,15 +4,21 @@ services:
   client:
     restart: always
     build:
+      dockerfile: Dockerfile.dev
       context: ./client
     ports:
-      - "8000:80"
+      - "8000:8000"
     depends_on:
       - api
+    volumes:
+      - ./client:/app  
 
   api:
     build:  
+      dockerfile: Dockerfile.dev
       context: ./server
+    ports:
+      - "5000:5000"  
     volumes:
       - /app/node_modules
       - ./server:/app

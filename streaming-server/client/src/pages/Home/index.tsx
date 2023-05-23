@@ -1,102 +1,30 @@
-import { useCallback, useState } from "react";
-
-import { useMutation } from "@apollo/client";
-
 import Plyr from "plyr-react";
 
-import { X } from "phosphor-react";
+import { CircleNotch, X } from "phosphor-react";
 
 import { Upload, Spinner, NotificationCounter } from "../../components";
 
-import { UPLOAD_FILE_MUTATION } from "../../gql/mutations/uploadFile";
-
-import { IUploadResponse } from "../../interfaces/IUploadResponse";
-
 import * as S from "./styles";
 
+import { useHome } from "./useHome";
+
 export function Home() {
-  const [fileURL, setFileURL] = useState<string>("");
-  const [isFileConverted, setIsFileConverted] = useState<boolean>(false);
-  const [uploadFile, { loading, data }] =
-    useMutation<IUploadResponse>(UPLOAD_FILE_MUTATION);
-
-  const handleUpload = async (files: File[]) => {
-    const file = files[0];
-
-    setFileURL(URL.createObjectURL(file));
-
-    await uploadFile({
-      variables: {
-        file,
-      },
-    });
-  };
-
-  const getConvertedPlayerProps = (url: string, data: IUploadResponse) => {
-    const { location } = data.uploadFile;
-
-    const fileNameWithoutExt = location.slice(location.lastIndexOf('/') + 1).replace('.mp4', '');
-
-    const prefix = `${process.env.CLOUDFRONT_URL}/${fileNameWithoutExt}/${fileNameWithoutExt}`;
-
-    return {
-      source: {
-        type: "video" as const,
-        sources: [
-          {
-            src: url,
-            type: "video/mp4",
-            provider: "html5" as const,
-            size: 1080,
-          },
-          {
-            src: `${prefix}_720p.mp4`,
-            type: "video/mp4",
-            provider: "html5" as const,
-            size: 720,
-          },
-          {
-            src: `${prefix}_320p.mp4`,
-            type: "video/mp4",
-            provider: "html5" as const,
-            size: 360,
-          }
-        ],
-      },
-      options: null,
-    };
-  };
-
-  const getInitialPlayerProps = (url: string) => {
-    return {
-      source: {
-        type: "video" as const,
-        sources: [
-          {
-            src: url,
-            type: "video/mp4",
-            provider: "html5" as const,
-            size: 1080,
-          },
-        ],
-      },
-      options: null,
-    };
-  };
-
-  const handleRemoveMedia = useCallback(() => {
-    setFileURL("");
-  }, []);
-
-  const handleReloadMedia = useCallback(() => {
-    setIsFileConverted(true);
-  }, []);
+  const {
+    notifications,
+    plyrConfig,
+    loading,
+    fileURL,
+    handleReload,
+    handleRemoveMedia,
+    handleRemoveNotification,
+    handleUpload,
+  } = useHome();
 
   return (
     <S.Container>
       <NotificationCounter
-        onRemoveMedia={handleRemoveMedia}
-        onReloadMedia={handleReloadMedia}
+        notifications={notifications}
+        handleRemoveNotification={handleRemoveNotification}
       />
 
       <S.Title>
@@ -110,14 +38,14 @@ export function Home() {
 
         {!fileURL && <Upload onUpload={handleUpload} />}
 
-        {!loading && fileURL && (
+        {!loading && plyrConfig && (
           <S.VideoWrapper>
-            <X size={23} weight="bold" onClick={handleRemoveMedia} />
+            <S.IconsWrapper>
+              <CircleNotch weight="bold" onClick={handleReload} />
+              <X weight="bold" onClick={handleRemoveMedia} />
+            </S.IconsWrapper>
 
-            {!isFileConverted && <Plyr {...getInitialPlayerProps(fileURL)} />}
-
-            {isFileConverted && data && <Plyr {...getConvertedPlayerProps(fileURL, data as IUploadResponse)} />}
-
+            <Plyr {...plyrConfig} />
           </S.VideoWrapper>
         )}
       </S.ContentWrapper>
