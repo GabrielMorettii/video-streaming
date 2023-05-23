@@ -6,7 +6,7 @@ Essa aplicação foi criada para servir como uma plataforma de upload de vídeos
 
 Este é um gif demonstrando o projeto
 
-![Preview-Screens](./docs/assets/app.gif)
+![Preview-Screens](./docs/assets/app.webm)
 
 ## 🌬️ Workflow
 

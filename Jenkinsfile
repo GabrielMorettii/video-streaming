@@ -16,6 +16,7 @@ pipeline {
     stage('Config'){
       steps {
         sh "cp $CLIENT_ENV $PATH_TO_ENV"
+        sh "chmod +rwx $PATH_TO_ENV"
       } 
     }
 
