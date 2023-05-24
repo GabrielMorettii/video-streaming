@@ -6,11 +6,11 @@ Essa aplicação foi criada para servir como uma plataforma de upload de vídeos
 
 Este é um gif demonstrando o projeto
 
-![Preview-Screens](./docs/assets/app.webm)
+![Preview-Screens](./docs/assets/app.gif)
 
 ## 🌬️ Workflow
 
-Este é o principal da aplicação
+Este é o fluxo principal da aplicação
 
 ![Workflow](./docs/assets/flow.png)
 
