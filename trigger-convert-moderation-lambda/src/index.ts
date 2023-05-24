@@ -338,7 +338,7 @@ const transcribe = new AWS.TranscribeService();
 const reko = new AWS.Rekognition();
 
 const mediaConvert = new AWS.MediaConvert({
-  endpoint: "https://q25wbt2lc.mediaconvert.us-east-1.amazonaws.com",
+  endpoint: process.env.MEDIA_CONVERT_ENDPOINT,
 });
 
 const handler = new Handler(transcribe, reko, mediaConvert);
