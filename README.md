@@ -24,18 +24,17 @@ The automation pipeline (CI/CD pipeline)
 
 This project mainly utilizes the following technologies:
 
-• Node.js: JavaScript runtime environment
-• GraphQL: Query language for APIs
-• React: JavaScript library for building user interfaces
-• TypeScript: Typed superset of JavaScript
-• Express: Web application framework for Node.js
-• Apollo Server: GraphQL server implementation
-• Apollo Client: GraphQL client for React
-• AWS: Platform for cloud services
-• Socket.io: Bidirectional communication between client and server
-• Serverless: Framework to facilitate cloud application creation
-• Jenkins: For CI/CD pipeline development
-
+- Node.js: JavaScript runtime environment
+- GraphQL: Query language for APIs
+- React: JavaScript library for building user interfaces
+- TypeScript: Typed superset of JavaScript
+- Express: Web application framework for Node.js
+- Apollo Server: GraphQL server implementation
+- Apollo Client: GraphQL client for React
+- AWS: Platform for cloud services
+- Socket.io: Bidirectional communication between client and server
+- Serverless: Framework to facilitate cloud application creation
+- Jenkins: For CI/CD pipeline development
 
 ## 🧐 Contributing
 
