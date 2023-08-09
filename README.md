@@ -1,55 +1,55 @@
 <h1 align="center">Node Streaming 🎥</h1>
 
-Essa aplicação foi criada para servir como uma plataforma de upload de vídeos, onde os usuários fazem upload de seus vídeos e, a partir disso, é realizada a moderação de conteúdo em tempo real. Os usuários podem assistir aos vídeos em diferentes resoluções, incluindo 1080p, 720p e 360p.
+This application was created to serve as a video upload platform, where users upload their videos and, from this, real-time content moderation is performed. Users can watch videos in different resolutions, including 1080p, 720p, and 360p.
 
 ## 👀 Overview
 
-Este é um gif demonstrando o projeto
+This is a gif demonstrating the project
 
 ![Preview-Screens](./docs/assets/app.gif)
 
 ## 🌬️ Workflow
 
-Este é o fluxo principal da aplicação
+This is the main flow of the application
 
 ![Workflow](./docs/assets/flow.png)
 
 ## 🌬️ Workflow
 
-A esteira de automação (pipeline CI/CD)
+The automation pipeline (CI/CD pipeline)
 
 ![Pipeline](./docs/assets/pipeline.png)
 
 ## 🔧 Tecnologias
 
-Este projeto utiliza **principalmente** as seguintes tecnologias:
+This project mainly utilizes the following technologies:
 
-- Node.js: Ambiente de execução JavaScript
-- GraphQL: Linguagem de consulta para APIs
-- React: Biblioteca JavaScript para construção de interfaces de usuário
-- TypeScript: Superset tipado do JavaScript
-- Express: Framework de aplicativo da web para Node.js
-- Apollo Server: Implementação de servidor GraphQL
-- Apollo Client: Cliente GraphQL para React
-- AWS: Plataforma para utilização de serviços em Nuvem
-- Socket.io: Comunicação bidirecional entre cliente e servidor
-- Serverless: Framework para facilitar a criação de aplicações em nuvem 
-- Jenkins: Desenvolvimento da pipeline CI/CD
+• Node.js: JavaScript runtime environment
+• GraphQL: Query language for APIs
+• React: JavaScript library for building user interfaces
+• TypeScript: Typed superset of JavaScript
+• Express: Web application framework for Node.js
+• Apollo Server: GraphQL server implementation
+• Apollo Client: GraphQL client for React
+• AWS: Platform for cloud services
+• Socket.io: Bidirectional communication between client and server
+• Serverless: Framework to facilitate cloud application creation
+• Jenkins: For CI/CD pipeline development
 
 
-## 🧐 Contribuindo
+## 🧐 Contributing
 
-Se você quiser contribuir para este projeto, siga estes passos:
+If you want to contribute to this project, follow these steps:
 
-    Fork este repositório
-    Crie uma nova branch (git checkout -b nova-feature)
-    Faça as alterações desejadas e faça commit das suas mudanças (git commit -am 'Adiciona nova feature')
-    Envie para o branch (git push origin nova-feature)
-    Crie um novo Pull Request e aguarde o feedback
+    Fork this repository
+    Create a new branch (git checkout -b new-feature)
+    Make the desired changes and commit them (git commit -am 'Add new feature')
+    Push to the branch (git push origin new-feature)
+    Create a new Pull Request and await feedback
 
-## 🔑 Licença
+## 🔑 License
 
-Este projeto está licenciado sob a licença MIT. Consulte o arquivo LICENSE para obter mais informações.
+This project is licensed under the MIT license. See the LICENSE file for more information.
 
 &nbsp;
 
